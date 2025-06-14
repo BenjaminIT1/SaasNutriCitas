@@ -1,6 +1,5 @@
 FROM php:8.2-apache
 
-# Instala extensiones necesarias
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
@@ -11,18 +10,16 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copia el código fuente al contenedor
 COPY . /var/www/html
 
-# Da permisos y habilita mod_rewrite
 RUN chown -R www-data:www-data /var/www/html \
     && a2enmod rewrite
 
-# Expone el puerto 80
+# Cambia el DocumentRoot de Apache a /var/www/html/public
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+
 EXPOSE 80
 
-# Comando de inicio
 CMD ["apache2-foreground"]
