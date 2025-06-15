@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::table('cliente_interesados', function (Blueprint $table) {
             $table->string("plan")->after("mensaje");
-            $table->enum("nutriologo")->after("plan");
+            $table->enum("nutriologo", ['si', 'no'])->after("plan");
+
             
         });
     }
